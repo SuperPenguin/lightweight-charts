@@ -147,11 +147,11 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		this._chartWidget.resize(width, height, forceRepaint);
 	}
 
-	public addAreaSeries(options: AreaSeriesPartialOptions = {}): ISeriesApi<'Area'> {
+	public addAreaSeries(options: AreaSeriesPartialOptions = {}, index: number = 0): ISeriesApi<'Area'> {
 		patchPriceFormat(options.priceFormat);
 
 		const strictOptions = merge(clone(seriesOptionsDefaults), areaStyleDefaults, options) as AreaSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Area', strictOptions);
+		const series = this._chartWidget.model().createSeries('Area', strictOptions, index);
 
 		const res = new SeriesApi<'Area'>(series, this);
 		this._seriesMap.set(res, series);
@@ -160,11 +160,11 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		return res;
 	}
 
-	public addBarSeries(options: BarSeriesPartialOptions = {}): ISeriesApi<'Bar'> {
+	public addBarSeries(options: BarSeriesPartialOptions = {}, index: number = 0): ISeriesApi<'Bar'> {
 		patchPriceFormat(options.priceFormat);
 
 		const strictOptions = merge(clone(seriesOptionsDefaults), barStyleDefaults, options) as BarSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Bar', strictOptions);
+		const series = this._chartWidget.model().createSeries('Bar', strictOptions, index);
 
 		const res = new SeriesApi<'Bar'>(series, this);
 		this._seriesMap.set(res, series);
@@ -173,12 +173,12 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		return res;
 	}
 
-	public addCandlestickSeries(options: CandlestickSeriesPartialOptions = {}): ISeriesApi<'Candlestick'> {
+	public addCandlestickSeries(options: CandlestickSeriesPartialOptions = {}, index: number = 0): ISeriesApi<'Candlestick'> {
 		fillUpDownCandlesticksColors(options);
 		patchPriceFormat(options.priceFormat);
 
 		const strictOptions = merge(clone(seriesOptionsDefaults), candlestickStyleDefaults, options) as CandlestickSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Candlestick', strictOptions);
+		const series = this._chartWidget.model().createSeries('Candlestick', strictOptions, index);
 
 		const res = new CandlestickSeriesApi(series, this);
 		this._seriesMap.set(res, series);
@@ -187,11 +187,11 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		return res;
 	}
 
-	public addHistogramSeries(options: HistogramSeriesPartialOptions = {}): ISeriesApi<'Histogram'> {
+	public addHistogramSeries(options: HistogramSeriesPartialOptions = {}, index: number = 0): ISeriesApi<'Histogram'> {
 		patchPriceFormat(options.priceFormat);
 
 		const strictOptions = merge(clone(seriesOptionsDefaults), histogramStyleDefaults, options) as HistogramSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Histogram', strictOptions);
+		const series = this._chartWidget.model().createSeries('Histogram', strictOptions, index);
 
 		const res = new SeriesApi<'Histogram'>(series, this);
 		this._seriesMap.set(res, series);
@@ -199,18 +199,21 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 
 		return res;
 	}
-
-	public addLineSeries(options: LineSeriesPartialOptions = {}): ISeriesApi<'Line'> {
+	public addLineSeries(options: LineSeriesPartialOptions = {}, index: number = 0): ISeriesApi<'Line'> {
 		patchPriceFormat(options.priceFormat);
 
 		const strictOptions = merge(clone(seriesOptionsDefaults), lineStyleDefaults, options) as LineSeriesOptions;
-		const series = this._chartWidget.model().createSeries('Line', strictOptions);
+		const series = this._chartWidget.model().createSeries('Line', strictOptions, index);
 
 		const res = new SeriesApi<'Line'>(series, this);
 		this._seriesMap.set(res, series);
 		this._seriesMapReversed.set(series, res);
 
 		return res;
+	}
+
+	public addSubPane(): void {
+		this._chartWidget.model().createSubplot();
 	}
 
 	public removeSeries(seriesApi: ISeriesApi<SeriesType>): void {

@@ -248,6 +248,35 @@ export class ChartModel implements IDestroyable {
 		return pane;
 	}
 
+	public createSubplot(index?: number): Pane {
+		const pane = new Pane(this._timeScale, this);
+
+		if (index !== undefined) {
+			this._panes.splice(index, 0, pane);
+		} else {
+			// adding to the end - common case
+			this._panes.push(pane);
+		}
+
+		const actualIndex = (index === undefined) ? this._panes.length - 1 : index;
+
+		// we always do autoscaling on the creation
+		// if autoscale option is true, it is ok, just recalculate by invalidation mask
+		// if autoscale option is false, autoscale anyway on the first draw
+		// also there is a scenario when autoscale is true in constructor and false later on applyOptions
+		const mask = new InvalidateMask(InvalidationLevel.Full);
+		mask.invalidatePane(actualIndex, {
+			level: InvalidationLevel.None,
+			autoScale: true,
+		});
+		this.invalidate(mask);
+
+		this._panes[actualIndex].setStretchFactor(DEFAULT_STRETCH_FACTOR * 2);
+		this._panes[actualIndex].addDataSource(this._watermark, true, false);
+
+		return pane;
+	}
+
 	public startScalePrice(pane: Pane, priceScale: PriceScale, x: number): void {
 		pane.startScalePrice(priceScale, x);
 	}
@@ -535,8 +564,8 @@ export class ChartModel implements IDestroyable {
 		return this._panes[0].defaultPriceScale();
 	}
 
-	public createSeries<T extends SeriesType>(seriesType: T, options: SeriesOptionsMap[T]): Series<T> {
-		const pane = this._panes[0];
+	public createSeries<T extends SeriesType>(seriesType: T, options: SeriesOptionsMap[T], index: number = 0): Series<T> {
+		const pane = this._panes[index];
 		const series = this._createSeries(options, seriesType, pane);
 		this._serieses.push(series);
 

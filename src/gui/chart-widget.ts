@@ -494,8 +494,8 @@ export class ChartWidget implements IDestroyable {
 			this._paneWidgets.push(paneWidget);
 
 			// create and insert separator
-			if (i > 1) {
-				const paneSeparator = new PaneSeparator(this, i - 1, i, true);
+			if (i >= 1) {
+				const paneSeparator = new PaneSeparator(this, i - 1, i, false);
 				this._paneSeparators.push(paneSeparator);
 				this._tableElement.insertBefore(paneSeparator.getElement(), this._timeAxisWidget.getElement());
 			}

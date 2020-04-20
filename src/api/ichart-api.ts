@@ -50,37 +50,47 @@ export interface IChartApi {
 	/**
 	 * Creates an area series with specified parameters
 	 * @param areaOptions - customization parameters of the series being created
+	 * @param index - pane index
 	 * @returns an interface of the created series
 	 */
-	addAreaSeries(areaOptions?: AreaSeriesPartialOptions): ISeriesApi<'Area'>;
+	addAreaSeries(areaOptions?: AreaSeriesPartialOptions, index?: number): ISeriesApi<'Area'>;
 
 	/**
 	 * Creates a bar series with specified parameters
 	 * @param barOptions - customization parameters of the series being created
+	 * @param index - pane index
 	 * @returns an interface of the created series
 	 */
-	addBarSeries(barOptions?: BarSeriesPartialOptions): ISeriesApi<'Bar'>;
+	addBarSeries(barOptions?: BarSeriesPartialOptions, index?: number): ISeriesApi<'Bar'>;
 
 	/**
 	 * Creates a candlestick series with specified parameters
 	 * @param candlestickOptions - customization parameters of the series being created
+	 * @param index - pane index
 	 * @returns an interface of the created series
 	 */
-	addCandlestickSeries(candlestickOptions?: CandlestickSeriesPartialOptions): ISeriesApi<'Candlestick'>;
+	addCandlestickSeries(candlestickOptions?: CandlestickSeriesPartialOptions, index?: number): ISeriesApi<'Candlestick'>;
 
 	/**
 	 * Creates a histogram series with specified parameters
 	 * @param histogramOptions - customization parameters of the series being created
+	 * @param index - pane index
 	 * @returns an interface of the created series
 	 */
-	addHistogramSeries(histogramOptions?: HistogramSeriesPartialOptions): ISeriesApi<'Histogram'>;
+	addHistogramSeries(histogramOptions?: HistogramSeriesPartialOptions, index?: number): ISeriesApi<'Histogram'>;
 
 	/**
 	 * Creates a line series with specified parameters
 	 * @param lineOptions - customization parameters of the series being created
+	 * @param index - pane index
 	 * @returns an interface of the created series
 	 */
-	addLineSeries(lineOptions?: LineSeriesPartialOptions): ISeriesApi<'Line'>;
+	addLineSeries(lineOptions?: LineSeriesPartialOptions, index?: number): ISeriesApi<'Line'>;
+
+	/**
+	 * Creates a sub pane
+	 */
+	addSubPane(): void;
 
 	/**
 	 * Removes a series of any type. This is an irreversible operation, you cannot do anything with the series after removing it
