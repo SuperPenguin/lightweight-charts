@@ -531,6 +531,8 @@ export class ChartWidget implements IDestroyable {
 					this._drawImpl(this._invalidateMask);
 					this._invalidateMask = null;
 				}
+
+				this._options.onRedraw();
 			});
 		}
 	}

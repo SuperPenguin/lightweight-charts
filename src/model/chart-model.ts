@@ -111,6 +111,7 @@ export interface ChartOptions {
 	handleScroll: HandleScrollOptions | boolean;
 	/** Structure that describes scaling behavior or boolean flag that disables/enables all kinds of scales */
 	handleScale: HandleScaleOptions | boolean;
+	onRedraw: () => void;
 }
 
 export type ChartOptionsInternal =

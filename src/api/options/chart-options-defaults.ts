@@ -48,4 +48,5 @@ export const chartOptionsDefaults: ChartOptionsInternal = {
 		mouseWheel: true,
 		pinch: true,
 	},
+	onRedraw: () => {},
 };
