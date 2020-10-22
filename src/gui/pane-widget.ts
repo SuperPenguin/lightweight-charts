@@ -24,7 +24,7 @@ import { isMobile, mobileTouch } from './support-touch';
 
 // actually we should check what event happened (touch or mouse)
 // not check current UA to detect "mobile" device
-const trackCrosshairOnlyAfterLongTap = isMobile;
+let trackCrosshairOnlyAfterLongTap = isMobile;
 
 export interface HitTestResult {
 	source: IPriceDataSource;
@@ -117,6 +117,8 @@ export class PaneWidget implements IDestroyable {
 				treatHorzTouchDragAsPageScroll: !scrollOptions.horzTouchDrag ? !scrollOptions.keepMouseMoveEvent : !scrollOptions.horzTouchDrag,
 			}
 		);
+
+		trackCrosshairOnlyAfterLongTap = scrollOptions.keepMouseMoveEvent ? false : isMobile;
 	}
 
 	public destroy(): void {
