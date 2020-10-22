@@ -83,6 +83,7 @@ function migrateHandleScaleScrollOptions(options: DeepPartial<ChartOptions>): vo
 			vertTouchDrag: handleScroll,
 			mouseWheel: handleScroll,
 			pressedMouseMove: handleScroll,
+			keepMouseMoveEvent: false,
 		};
 	}
 }
@@ -143,6 +144,10 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 
 	private readonly _clickedDelegate: Delegate<MouseEventParams> = new Delegate();
 	private readonly _crosshairMovedDelegate: Delegate<MouseEventParams> = new Delegate();
+	
+	private readonly _mouseDownDelegate: Delegate<MouseEventParams> = new Delegate();
+	private readonly _mouseUpDelegate: Delegate<MouseEventParams> = new Delegate();
+	private readonly _mouseMovedDelegate: Delegate<MouseEventParams> = new Delegate();
 
 	private readonly _timeScaleApi: TimeScaleApi;
 
@@ -157,6 +162,30 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 			(paramSupplier: MouseEventParamsImplSupplier) => {
 				if (this._clickedDelegate.hasListeners()) {
 					this._clickedDelegate.fire(this._convertMouseParams(paramSupplier()));
+				}
+			},
+			this
+		);
+		this._chartWidget.mouseDown().subscribe(
+			(paramSupplier: MouseEventParamsImplSupplier) => {
+				if (this._mouseDownDelegate.hasListeners()) {
+					this._mouseDownDelegate.fire(this._convertMouseParams(paramSupplier()));
+				}
+			},
+			this
+		);
+		this._chartWidget.mouseUp().subscribe(
+			(paramSupplier: MouseEventParamsImplSupplier) => {
+				if (this._mouseUpDelegate.hasListeners()) {
+					this._mouseUpDelegate.fire(this._convertMouseParams(paramSupplier()));
+				}
+			},
+			this
+		);
+		this._chartWidget.mouseMoved().subscribe(
+			(paramSupplier: MouseEventParamsImplSupplier) => {
+				if (this._mouseMovedDelegate.hasListeners()) {
+					this._mouseMovedDelegate.fire(this._convertMouseParams(paramSupplier()));
 				}
 			},
 			this
@@ -176,6 +205,9 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 
 	public remove(): void {
 		this._chartWidget.clicked().unsubscribeAll(this);
+		this._chartWidget.mouseDown().unsubscribeAll(this);
+		this._chartWidget.mouseUp().unsubscribeAll(this);
+		this._chartWidget.mouseMoved().unsubscribeAll(this);
 		this._chartWidget.crosshairMoved().unsubscribeAll(this);
 
 		this._timeScaleApi.destroy();
@@ -185,6 +217,9 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 		this._seriesMapReversed.clear();
 
 		this._clickedDelegate.destroy();
+		this._mouseDownDelegate.destroy();
+		this._mouseUpDelegate.destroy();
+		this._mouseMovedDelegate.destroy();
 		this._crosshairMovedDelegate.destroy();
 		this._dataLayer.destroy();
 	}
@@ -291,6 +326,30 @@ export class ChartApi implements IChartApi, DataUpdatesConsumer<SeriesType> {
 
 	public unsubscribeClick(handler: MouseEventHandler): void {
 		this._clickedDelegate.unsubscribe(handler);
+	}
+
+	public subscribeMouseDown(handler: MouseEventHandler): void {
+		this._mouseDownDelegate.subscribe(handler);
+	}
+
+	public unsubscribeMouseDown(handler: MouseEventHandler): void {
+		this._mouseDownDelegate.unsubscribe(handler);
+	}
+
+	public subscribeMouseUp(handler: MouseEventHandler): void {
+		this._mouseUpDelegate.subscribe(handler);
+	}
+
+	public unsubscribeMouseUp(handler: MouseEventHandler): void {
+		this._mouseUpDelegate.unsubscribe(handler);
+	}
+
+	public subscribeMouseMoved(handler: MouseEventHandler): void {
+		this._mouseMovedDelegate.subscribe(handler);
+	}
+
+	public unsubscribeMouseMoved(handler: MouseEventHandler): void {
+		this._mouseMovedDelegate.unsubscribe(handler);
 	}
 
 	public subscribeCrosshairMove(handler: MouseEventHandler): void {

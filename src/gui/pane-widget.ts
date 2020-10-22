@@ -58,6 +58,9 @@ export class PaneWidget implements IDestroyable {
 	private _startTrackPoint: Point | null = null;
 	private _exitTrackingModeOnNextTry: boolean = false;
 	private _initCrosshairPosition: Point | null = null;
+	private _mouseDown: Delegate<TimePointIndex | null, Point> = new Delegate();
+	private _mouseUp: Delegate<TimePointIndex | null, Point> = new Delegate();
+	private _mouseMoved: Delegate<TimePointIndex | null, Point> = new Delegate();
 
 	public constructor(chart: ChartWidget, state: Pane) {
 		this._chart = chart;
@@ -110,8 +113,8 @@ export class PaneWidget implements IDestroyable {
 			this._topCanvasBinding.canvas,
 			this,
 			{
-				treatVertTouchDragAsPageScroll: !scrollOptions.vertTouchDrag,
-				treatHorzTouchDragAsPageScroll: !scrollOptions.horzTouchDrag,
+				treatVertTouchDragAsPageScroll: !scrollOptions.vertTouchDrag ? scrollOptions.keepMouseMoveEvent ? false : true : !scrollOptions.horzTouchDrag,
+				treatHorzTouchDragAsPageScroll: !scrollOptions.horzTouchDrag ? scrollOptions.keepMouseMoveEvent ? false : true : !scrollOptions.horzTouchDrag,
 			}
 		);
 	}
@@ -239,6 +242,13 @@ export class PaneWidget implements IDestroyable {
 			this._startTrackPoint = { x: event.localX as Coordinate, y: event.localY as Coordinate };
 		}
 
+		if (this._mouseDown.hasListeners()) {
+			const x = event.localX as Coordinate;
+			const y = event.localY as Coordinate;
+			const currentTime = this._model().crosshairSource().appliedIndex();
+			this._mouseDown.fire(currentTime, { x, y });
+		}
+
 		if (!mobileTouch) {
 			this._setCrosshairPosition(event.localX as Coordinate, event.localY as Coordinate);
 		}
@@ -254,6 +264,11 @@ export class PaneWidget implements IDestroyable {
 
 		if (this._preventCrosshairMove()) {
 			this._clearCrosshairPosition();
+		}
+
+		if (this._mouseMoved.hasListeners()) {
+			const currentTime = this._model().crosshairSource().appliedIndex();
+			this._mouseMoved.fire(currentTime, { x, y });
 		}
 
 		if (!mobileTouch) {
@@ -311,6 +326,11 @@ export class PaneWidget implements IDestroyable {
 			return;
 		}
 
+		if (this._mouseMoved.hasListeners()) {
+			const currentTime = model.crosshairSource().appliedIndex();
+			this._mouseMoved.fire(currentTime, { x, y });
+		}
+
 		const scrollOptions = this._chart.options().handleScroll;
 		if (
 			(!scrollOptions.pressedMouseMove || event.type === 'touch') &&
@@ -359,6 +379,13 @@ export class PaneWidget implements IDestroyable {
 
 		const model = this._model();
 
+		if (this._mouseUp.hasListeners()) {
+			const x = event.localX as Coordinate;
+			const y = event.localY as Coordinate;
+			const currentTime = model.crosshairSource().appliedIndex();
+			this._mouseUp.fire(currentTime, { x, y });
+		}
+
 		if (this._isScrolling) {
 			const priceScale = this._state.defaultPriceScale();
 			// this allows scrolling not default price scales
@@ -393,6 +420,18 @@ export class PaneWidget implements IDestroyable {
 
 	public clicked(): ISubscription<TimePointIndex | null, Point> {
 		return this._clicked;
+	}
+
+	public mouseDown(): ISubscription<TimePointIndex | null, Point> {
+		return this._mouseDown;
+	}
+	
+	public mouseUp(): ISubscription<TimePointIndex | null, Point> {
+		return this._mouseUp;
+	}
+	
+	public mouseMoved(): ISubscription<TimePointIndex | null, Point> {
+		return this._mouseMoved;
 	}
 
 	public pinchStartEvent(): void {

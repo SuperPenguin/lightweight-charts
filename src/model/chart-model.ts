@@ -32,6 +32,7 @@ export interface HandleScrollOptions {
 	pressedMouseMove: boolean;
 	horzTouchDrag: boolean;
 	vertTouchDrag: boolean;
+	keepMouseMoveEvent: boolean;
 }
 
 export interface HandleScaleOptions {
