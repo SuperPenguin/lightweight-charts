@@ -107,36 +107,42 @@ export interface IChartApi {
 
 	/**
 	 * Adds a subscription to mouse down event
+	 *
 	 * @param handler - handler (function) to be called on mouse down
 	 */
 	subscribeMouseDown(handler: MouseEventHandler): void;
 
 	/**
 	 * Removes mouse down subscription
+	 *
 	 * @param handler - previously subscribed handler
 	 */
 	unsubscribeMouseDown(handler: MouseEventHandler): void;
 
 	/**
 	 * Adds a subscription to mouse up event
+	 *
 	 * @param handler - handler (function) to be called on mouse up
 	 */
 	subscribeMouseUp(handler: MouseEventHandler): void;
 
 	/**
 	 * Removes mouse up subscription
+	 *
 	 * @param handler - previously subscribed handler
 	 */
 	unsubscribeMouseUp(handler: MouseEventHandler): void;
 
 	/**
 	 * Adds a subscription to mouse move event
+	 *
 	 * @param handler - handler (function) to be called on mouse move
 	 */
 	subscribeMouseMoved(handler: MouseEventHandler): void;
 
 	/**
 	 * Removes mouse move subscription
+	 *
 	 * @param handler - previously subscribed handler
 	 */
 	unsubscribeMouseMoved(handler: MouseEventHandler): void;

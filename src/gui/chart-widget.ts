@@ -638,7 +638,7 @@ export class ChartWidget implements IDestroyable {
 			hoveredObject,
 		};
 	}
-	
+
 	private _onPaneWidgetClicked(time: TimePointIndex | null, point: Point): void {
 		this._clicked.fire(() => this._getMouseEventParamsImpl(time, point));
 	}

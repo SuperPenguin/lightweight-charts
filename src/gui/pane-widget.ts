@@ -113,8 +113,8 @@ export class PaneWidget implements IDestroyable {
 			this._topCanvasBinding.canvas,
 			this,
 			{
-				treatVertTouchDragAsPageScroll: !scrollOptions.vertTouchDrag ? scrollOptions.keepMouseMoveEvent ? false : true : !scrollOptions.horzTouchDrag,
-				treatHorzTouchDragAsPageScroll: !scrollOptions.horzTouchDrag ? scrollOptions.keepMouseMoveEvent ? false : true : !scrollOptions.horzTouchDrag,
+				treatVertTouchDragAsPageScroll: !scrollOptions.vertTouchDrag ? !scrollOptions.keepMouseMoveEvent : !scrollOptions.horzTouchDrag,
+				treatHorzTouchDragAsPageScroll: !scrollOptions.horzTouchDrag ? !scrollOptions.keepMouseMoveEvent : !scrollOptions.horzTouchDrag,
 			}
 		);
 	}
@@ -425,11 +425,11 @@ export class PaneWidget implements IDestroyable {
 	public mouseDown(): ISubscription<TimePointIndex | null, Point> {
 		return this._mouseDown;
 	}
-	
+
 	public mouseUp(): ISubscription<TimePointIndex | null, Point> {
 		return this._mouseUp;
 	}
-	
+
 	public mouseMoved(): ISubscription<TimePointIndex | null, Point> {
 		return this._mouseMoved;
 	}
