@@ -461,6 +461,8 @@ export class ChartModel implements IDestroyable {
 			const y = this._crosshair.originCoordY();
 			this.setAndSaveCurrentPosition(x, y, pane);
 		}
+
+		this._crosshair.updateAllViews();
 	}
 
 	public updateTimeScale(newBaseIndex: TimePointIndex, newPoints?: readonly TimeScalePoint[]): void {
